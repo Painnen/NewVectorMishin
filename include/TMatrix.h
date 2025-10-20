@@ -469,7 +469,7 @@ inline void TMatrix<T>::ApplyLambda(std::function<void(T&)> lambda)
 {
 	for (Iterator i = begin(); i != end() ; ++i)
 	{
-		lambda(*it);
+		lambda(*i);
 	}
 }
 
