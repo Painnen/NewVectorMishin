@@ -2,6 +2,8 @@
 #include<vector>
 #include<functional>
 #include<stdexcept>
+#include <cmath>
+#include <fstream>  
 
 class RowOffsets
 {
@@ -67,23 +69,30 @@ public:
 		}
 	};
 
-	T* operator[](size_t row)
+	RowAccessor operator[](size_t row)
 	{
-		return RowAccessor(cols, matrix + counter.GetOffset(row))
+	if (row >= size) 
+	{
+        throw std::out_of_range("Row index out of range");
+    }
+    return RowAccessor(row, matrix + counter.GetOffset(row));  
 	}
 
 	void SaveToFile(const std::string& filename) const;
 	void LoadFromFile(const std::string& filename);
 
-	friend std::ostream& operator<<(std::ostream& os, const TriangleMatrix& mx);
-	friend std::istream& operator>>(std::istream& is, TriangleMatrix& mx);
+	template<typename U>
+    friend std::ostream& operator<<(std::ostream& os, const TriangleMatrix<U>& mx);
+
+    template<typename U>
+    friend std::istream& operator>>(std::istream& is, TriangleMatrix<U>& mx);
 
 	class Iterator
 	{
 	private:
 		T* ptr;
 	public:
-		Iterator(T* p = nullprt);
+		Iterator(T* p = nullptr);
 		Iterator& operator++();
 		T& operator*() const;
 		T* operator->() const;
@@ -211,7 +220,7 @@ inline TriangleMatrix<T> TriangleMatrix<T>::operator*(TriangleMatrix& mx)
 		for (size_t j = 0; j < i; j++) //столбцы
 		{
 			T value;
-			for (size_t k = 0; k < i; k++++)
+			for (size_t k = 0; k < i; k++)
 			{
 				value += Get(i, k) * Get(k, j);
 			}
@@ -602,4 +611,3 @@ inline T TriangleMatrix<T>::InfinityNorm() const
 	}
 	return maxSum;
 }
-
