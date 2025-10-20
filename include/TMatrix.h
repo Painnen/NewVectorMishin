@@ -51,7 +51,7 @@ public:
 	TMatrix<T> operator*(TMatrix& mx);
 	bool operator==(TMatrix& mx);
 	bool operator!=(TMatrix& mx);
-	TMatrix<T>& operator=(TMatrix& other);
+	TMatrix<T>& operator=(const TMatrix& other);
 	
 	/*T& operator[](size_t i)
 	{
@@ -112,8 +112,12 @@ public:
 	void SaveToFile(const std::string& filename) const;
 	void LoadFromFile(const std::string& filename);
 
-	friend std::ostream& operator<<(std::ostream& os, const TMatrix& vec);
-	friend std::istream& operator>>(std::istream& is, TMatrix& vec);
+
+	template<typename U>
+    friend std::ostream& operator<<(std::ostream& os, const TMatrix<U>& mat);
+
+    template<typename U>
+    friend std::istream& operator>>(std::istream& is, TMatrix<U>& mat);
 
 	struct Coordinates
 	{
@@ -387,7 +391,7 @@ inline bool TMatrix<T>::operator!=(TMatrix& mx)
 }
 
 template<typename T>
-inline TMatrix<T>& TMatrix<T>::operator=(TMatrix& other)
+inline TMatrix<T>& TMatrix<T>::operator=(const TMatrix& other)
 {
 	if (this != &other)
 	{
