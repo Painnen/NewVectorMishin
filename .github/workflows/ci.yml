@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: ["main, master"]
   pull_request:
-    branches: [ master ]
+    branches: ["main, master"]
 
 jobs:
   build:
@@ -31,9 +31,9 @@ jobs:
       
     - name: Run tests
       run: |
-        if [ -f "./build/bin/test_set" ]; then
-          ./build/bin/test_set  # ЗАПУСКАТЬ тесты, а не перечислять
+        if [ -f "./build/bin/test_matrix" ]; then
+          ./build/bin/test_matrix  # ЗАПУСКАТЬ тесты, а не перечислять
         else
-          echo "Test executable not found at ./build/bin/test_set"
+          echo "Test executable not found at ./build/bin/test_matrix"
           find ./build -name "*test*" -type f
         fi
