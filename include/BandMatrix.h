@@ -62,8 +62,11 @@ public:
 	void SaveToFile(const std::string& filename) const;
 	void LoadFromFile(const std::string& filename);
 
-	friend std::ostream& operator<<(std::ostream& os, const TMatrix<T>& vec);
-	friend std::istream& operator>>(std::istream& is, TMatrix<T>& vec);
+	template<typename U>
+    friend std::ostream& operator<<(std::ostream& os, const BandMatrix<U>& mat);
+
+    template<typename U>
+    friend std::istream& operator>>(std::istream& is, BandMatrix<U>& mat);
 
 	int CountOccurrenses(const T& value);
 	std::vector<Coordinates> FindAll(const T& value);
