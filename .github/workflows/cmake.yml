@@ -1,39 +1,36 @@
-name: CI
+name: CMake on a single platform
 
 on:
   push:
-    branches: ["main", "master"]
+    branches: [ "master", "main" ]
   pull_request:
-    branches: ["main", "master"]
+    branches: [ "master", "main" ]
+
+env:
+  BUILD_TYPE: Release
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    
-    runs-on: ${{ matrix.os }}
-    
+    runs-on: ubuntu-latest
+    timeout-minutes: 10  # Добавляем таймаут
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Clean build directory
-      run: |
-        rm -rf build
-        mkdir -p build
-      
-    - name: Configure with CMake
-      run: cmake -B build -S .
-      
-    - name: Build project
-      run: cmake --build build --parallel
-      
-    - name: Run tests
+    - uses: actions/checkout@v4  # Обновляем до v4
+
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+
+
+    - name: Test
+      # Добавляем проверку что файл существует
       run: |
         if [ -f "./build/bin/test_matrix" ]; then
-          ./build/bin/test_matrix  # ЗАПУСКАТЬ тесты, а не перечислять
+          ./build/bin/test_matrix
         else
-          echo "Test executable not found at ./build/bin/test_matrix"
-          find ./build -name "*test*" -type f
+          echo "Test executable not found - build may have failed"
+          exit 1
         fi
