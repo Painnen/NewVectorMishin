@@ -63,8 +63,11 @@ public:
 	void SaveToFile(const std::string& filename) const;
 	void LoadFromFile(const std::string& filename);
 
-	friend std::ostream& operator<<(std::ostream& os, const TVector& vec);
-	friend std::istream& operator>>(std::istream& is, TVector& vec);
+    template<typename U>
+    friend std::ostream& operator<<(std::ostream& os, const TVector<U>& vec);
+
+    template<typename U>
+    friend std::istream& operator>>(std::istream& is, TVector<U>& vec);
 };
 
 
@@ -361,12 +364,12 @@ inline void TVector<T>::PushFront(const T& value)
 	else
 	{
 		Resize(sz + 100);
-		for (int i = size; i > 0; i--)
+		for (int i = sz; i > 0; i--)
 		{
-			v[size] = v[size - 1];
+			v[sz] = v[sz - 1];
 		}
 		v[0] = value;
-		size = size + 1;
+		sz = sz + 1;
 		
 	}
 }
@@ -374,7 +377,7 @@ inline void TVector<T>::PushFront(const T& value)
 template<typename T>
 inline void TVector<T>::PushBack(const T& value)
 {
-	if (size < capacity)
+	if (sz < capacity)
 	{
 		v[sz] = value;
 		sz = sz + 1;
@@ -382,7 +385,7 @@ inline void TVector<T>::PushBack(const T& value)
 	else
 	{
 		Resize(sz + 100);
-		v[size] = value;
+		v[sz] = value;
 		sz = sz + 1;
 	}
 }
@@ -513,4 +516,3 @@ std::istream& operator>>(std::istream& is, TVector<T>& vec)
 
 	return is;
 }
-
