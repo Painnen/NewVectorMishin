@@ -1,0 +1,36 @@
+name: CMake on a single platform
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10  # Добавляем таймаут
+
+    steps:
+    - uses: actions/checkout@v4  # Обновляем до v4
+
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+
+
+    - name: Test
+      # Добавляем проверку что файл существует
+      run: |
+        if [ -f "./build/bin/test_matrix" ]; then
+          ./build/bin/test_matrix
+        else
+          echo "Test executable not found - build may have failed"
+          exit 1
+        fi
